@@ -12,7 +12,7 @@
     <style type="text/tailwindcss">
       @layer components {
         .card {
-          @apply w-44 md:w-auto aspect-[8/6] md:aspect-[4/3] rounded-xl hover:scale-95 active:border-8 active:border-indigo-500 hover:opacity-90 hover:shadow-xl shadow shadow-indigo-500/20 active:scale-90 transition-all duration-150 cursor-pointer;
+          @apply w-44 md:w-auto md:aspect-[4/3] aspect-[8/6] rounded-xl hover:scale-95 active:border-8 active:border-indigo-500 hover:opacity-90 hover:shadow-xl shadow shadow-indigo-500/20 active:scale-90 transition-all duration-150 cursor-pointer;
         }
       }
     </style>
@@ -51,8 +51,8 @@
     </div>
 
     <!-- data-tilt="" -->
-    <div class="container md:mx-60 mb-8" x-data="gameData()">
-      <div class="flex flex-wrap items-center justify-center px-3 md:grid grid-cols-2 gap-4 md:gap-8 md:p-2 content-center md:grid-cols-4 md:p-4">
+    <div class="box-wrap 2xl:mx-60 md:mx-8 mb-8" x-data="gameData()">
+      <div class="flex flex-wrap items-center justify-center px-3 md:grid grid-cols-2 gap-4 md:gap-8 md:p-2 md:content-center md:grid-cols-4 md:p-4">
         <template x-for="card in cards">
           <div class="aspect-[4/3]">
             <div class="card" :class="['bg-' + (card.flipped? card.color : 'slate-400'), 'hover:shadow-' + (card.flipped? card.color + '/30' : 'indigo-500/30'), card.animate]" x-on:click="flipCard(card)" x-show="!card.cleared"></div>
