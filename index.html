@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Poppins:wght@500&display=swap" rel="stylesheet" />
+    <!-- CUSTOM STYLE; Components -->
+    <style type="text/tailwindcss">
+      @layer components {
+        .card {
+          @apply w-44 md:w-auto aspect-[8/6] md:aspect-[4/3] rounded-xl hover:scale-95 active:border-8 active:border-indigo-500 hover:opacity-90 hover:shadow-xl shadow shadow-indigo-500/20 active:scale-90 transition-all duration-150 cursor-pointer;
+        }
+      }
+    </style>
+
+    <!-- ALPINE.JS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- OTHERS LIBRARY -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <title>A Simple Memory Game with Alpine.js</title>
+    <script>
+      document.getElementById("wrong").volume = wrongVol;
+      document.getElementById("success").volume = successVol;
+    </script>
+  </head>
+  <body class="bg-indigo-50">
+    <div class="heading md:mx-[120px] text-center md:my-8 mb-8 md:mb-10 md:p-8 py-4 bg-indigo-600 md:rounded-3xl text-white shadow-xl shadow-indigo-500/20 relative">
+      <a href="https://dimaskuy.github.io/" class="font-['Poppins'] text-xl md:text-2xl hover:font-['Playfair_Display'] hover:italic hover:opacity-80" target="_blank">DimasRS'</a>
+      <h1 class="text-3xl md:text-7xl font-bold pt-0 pb-1 md:pb-4 md:pt-1 font-['Poppins'] md:tracking-widest">SIMPLE MEMORY GAME</h1>
+      <a
+        href="https://alpinejs.dev/start-here"
+        class="link-alpine text-lg md:text-2xl font-['Playfair_Display'] hover:italic hover:underline hover:text-slate-100"
+        target="_blank"
+        x-text="message"
+        x-data="{ message: 'Built with Alpine.js' }"
+        @mouseover="message = quoteTitle[Math.round(Math.random() * quoteTitle.length)]"
+        @mouseleave="message = Built with Alpine.js"
+        >Built with Alpine.js</a
+      >
+      <button class="absolute right-0 bottom-0 px-5 py-1 md:px-10 md:py-5 group" onclick="volumeToggle(this)">
+        <i><img src="icon/volume-on.svg" title="Sound ON/OFF" class="w-11 md:w-16 transition duration-75 group-hover:bg-white/10 active:group-hover:bg-white/30 rounded-xl p-2" data-volumeOn="true" /></i>
+      </button>
+    </div>
+
+    <!-- data-tilt="" -->
+    <div class="container md:mx-60 mb-8" x-data="gameData()">
+      <div class="flex flex-wrap items-center justify-center px-3 md:grid grid-cols-2 gap-4 md:gap-8 md:p-2 content-center md:grid-cols-4 md:p-4">
+        <template x-for="card in cards">
+          <div class="aspect-[4/3]">
+            <div class="card" :class="['bg-' + (card.flipped? card.color : 'slate-400'), 'hover:shadow-' + (card.flipped? card.color + '/30' : 'indigo-500/30'), card.animate]" x-on:click="flipCard(card)" x-show="!card.cleared"></div>
+            <audio src="sfx/click.wav" id="click"></audio>
+            <audio src="sfx/wrong.wav" id="wrong"></audio>
+            <audio src="sfx/success.wav" id="success"></audio>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <footer class="pb-5 text-center">
+      <p class="text-slate-800/30 tracking-[10px] md:tracking-[20px] font-['Poppins'] font-bold text-lg md:text-2xl">ALPINE.JS</p>
+    </footer>
+
+    <!-- CUSTOM SCRIPT; Function -->
+    <script>
+      const quoteTitle = ["A L P I N E !", '"Alpine" + "JS"', "Tutorial by Sandhika Galih", "Alpine: 'JS'", "Built with other library too", "Javascript.Ap"];
+      const quoteWin = ["CONGRATS!", "Congrats!", "GG GAMING!", "Berhasil!", "WADUUHH😅😅", "HEBAT KAMU, SULIAJI"];
+      const imgWin = [
+        "https://i.pinimg.com/736x/86/a2/d4/86a2d4005f50d7af4e400fd43a1fe240.jpg",
+        "https://i.ytimg.com/vi/xzy_0m7jwRw/maxresdefault.jpg",
+        "https://i.pinimg.com/originals/04/d5/23/04d5235026dc9cba90ca1da10503628c.png",
+        "http://www.quickmeme.com/img/62/62df015fb8b8bbdf4829d38a46604a4db83a88134b723cebb4ee719bd40f1094.jpg",
+        "http://www.quickmeme.com/img/62/62df015fb8b8bbdf4829d38a46604a4db83a88134b723cebb4ee719bd40f1094.jpg",
+        "https://i.redd.it/zhfy6d569v671.jpg",
+        "https://i.pinimg.com/736x/e8/1b/89/e81b89e686f9e3cb5c19337be0744718.jpg",
+      ];
+      const pickedQuote = quoteWin[Math.round(Math.random() * quoteWin.length)];
+      const pickedImg = imgWin[Math.round(Math.random() * imgWin.length)];
+
+      const [successVol, wrongVol] = [0.8, 0.5];
+      let iconTemp = true;
+      function volumeToggle(el) {
+        const audios = document.querySelectorAll("audio");
+        let icon = el.querySelector("i > img");
+        let iconCheck = icon.dataset["volumeon"];
+        iconCheck = iconTemp;
+
+        if (iconCheck) {
+          icon.src = "icon/volume-off.svg";
+          audios.forEach((audio) => (audio.volume = 0.0));
+          iconCheck = false;
+          return (iconTemp = iconCheck);
+        }
+        icon.src = "icon/volume-on.svg";
+        audios.forEach((audio) => {
+          if (audio.id === "success") audio.volume = successVol;
+          if (audio.id === "wrong") audio.volume = wrongVol;
+          audio.volume = 1.0;
+        });
+        iconCheck = true;
+        return (iconTemp = iconCheck);
+      }
+
+      // LOGIC MEMORY GAME
+      // *menggunakan promise (async) dapat membuat syntax utk "memberi jeda saat menutup/membuka warna jika sudah memilih 2 cards", lebih rapi daripada langsung pakai timeout
+      const delayAnimate = (miliseconds = 500) => new Promise((resolve) => setTimeout(resolve, miliseconds));
+
+      const gameData = () => {
+        return {
+          cards: [
+            { color: "pink-500", flipped: false, cleared: false, animate: "" },
+            { color: "teal-500", flipped: false, cleared: false, animate: "" },
+            { color: "cyan-300", flipped: false, cleared: false, animate: "" },
+            { color: "amber-500", flipped: false, cleared: false, animate: "" },
+            { color: "violet-400", flipped: false, cleared: false, animate: "" },
+            { color: "purple-900", flipped: false, cleared: false, animate: "" },
+            { color: "pink-500", flipped: false, cleared: false, animate: "" },
+            { color: "teal-500", flipped: false, cleared: false, animate: "" },
+            { color: "cyan-300", flipped: false, cleared: false, animate: "" },
+            { color: "amber-500", flipped: false, cleared: false, animate: "" },
+            { color: "violet-400", flipped: false, cleared: false, animate: "" },
+            { color: "purple-900", flipped: false, cleared: false, animate: "" },
+          ].sort(() => Math.random() - 0.5), // Membuat Randomisasi Card
+
+          get flippedCards() {
+            return this.cards.filter((card) => card.flipped);
+          },
+
+          get remainingCards() {
+            return this.cards.filter((card) => !card.cleared);
+          },
+
+          async flipCard(card) {
+            document.getElementById("click").play();
+            // Peraturan Hanya bisa buka 2 Kartu
+            if (this.flippedCards.length === 2) return;
+
+            // Membuka atau Menutup Kartu
+            !card.flipped ? (card.flipped = true) : (card.flipped = false);
+
+            // Ketika ada 2 kartu terbuka, lalu Cek Warna nya Sama atau Tidak
+            if (this.flippedCards.length === 2) {
+              if (this.flippedCards[0].color === this.flippedCards[1].color) {
+                // Berikan Animasi sebelum kartu menghilang
+                document.getElementById("success").play();
+                this.flippedCards.forEach((card) => (card.animate = "animate__animated animate__bounceOutDown animate_slow"));
+
+                await delayAnimate(800);
+                this.flippedCards.forEach((card) => (card.cleared = true));
+
+                // Cek apakah Semua Kartu sudah Hilang
+                if (this.remainingCards.length === 0) {
+                  Swal.fire({
+                    html: `
+                    <img src="${pickedImg}" alt="${pickedQuote} photo" class="animate__animated animate__flip pb-2 md:pb-4">
+                    <h1 class="font-['Poppins'] font-bold text-4xl"> ${pickedQuote} </h1>`,
+                    imageAlt: quoteWin[Math.round(Math.random() * quoteWin.length)],
+                    confirmButtonText: "OK!",
+                  }).then((result) => {
+                    if (result.isConfirmed) location.reload();
+                  });
+                }
+              } else {
+                document.getElementById("wrong").play();
+              }
+
+              // Berikan Animasi sebelum kartu menghilang
+              this.flippedCards.forEach((card) => (card.animate = "animate__animated animate__shakeX animate_fast"));
+
+              // Tutup Semua kartu, setelah Pemeriksaan
+              await delayAnimate(800);
+              this.flippedCards.forEach((card) => (card.flipped = false));
+
+              // Hilangkan class Animasi sesudah kartu ditutup
+              this.remainingCards.forEach((card) => (card.animate = ""));
+            }
+          },
+        };
+      };
+    </script>
+  </body>
+</html>
