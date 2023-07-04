@@ -13,3 +13,6 @@ Tools that I used to build this:
 -  UI framework: [Tailwind CSS](tailwindcss.com/)
 -  Animation stuff using: [Animate.css](https://animate.style/)
 -  For making the popup better: [Sweetalert2]([https://animate.style/](https://sweetalert2.github.io/)https://sweetalert2.github.io/)
+
+<br>
+View Demo: https://dimaskuy.github.io/memory-game/
