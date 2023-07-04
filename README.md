@@ -1,12 +1,13 @@
 # COLOR MEMORY GAME 🟦🟧🟩
-You will only guess which card has the same color as the color of the card we chose first.
+You will only guess which card has the same color as the color of the card we chose first. <br>
 There are 6 colors: _pink_, _teal_, _cyan_, _amber_, _violet_, and _purple_.
-
+<br>
 > NOTE: This website page may not be completely responsive for mobile users due to UI issues.
 
 <hr>
 
-Tools that I used:
+# Tools:
+Tools that I used to build this:
 - HTML/CSS/Little help with Vanilla JS.
 -  Game logic with: [Alpine.JS](https://alpinejs.dev/)
 -  UI framework: [Tailwind CSS](tailwindcss.com/)
